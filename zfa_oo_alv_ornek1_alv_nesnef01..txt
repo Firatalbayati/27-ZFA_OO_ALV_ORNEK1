@@ -1,0 +1,110 @@
+*----------------------------------------------------------------------*
+***INCLUDE ZFA_OO_ALV_ORNEK1_ALV_NESNEF01.
+*----------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&      Form  ALV_NESNESI_OLUSTUR
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM alv_nesnesi_olustur .
+
+  IF go_container IS INITIAL.
+
+    CREATE OBJECT go_container
+      EXPORTING
+        container_name = 'ALV_AREA1'. "ilk yaratımız alv alanı
+
+    CREATE OBJECT go_alv
+      EXPORTING
+        i_parent = go_container. " usteki objectle bağladık
+
+    SELECT * FROM sflight
+         INTO TABLE gt_sflight.
+
+
+    gs_layout-zebra = abap_true.
+    gs_layout-grid_title = 'Ucusların gunluk listesi'. "girite görülür yani alvenın hemen üstünde
+*    gs_layout-edit = abap_true. "istedimiz alanda elle veri girmek için
+
+    APPEND cl_gui_alv_grid=>mc_fc_print TO gt_toolbar_excluding. "toolbardan print(MC_FC_PRINT) buttonunu sildek
+*    APPEND cl_gui_alv_grid=>mc_fc_excl_all TO gt_toolbar_excluding. "toolbardaki butun buttonları siler
+
+*    gs_filter-fieldname = 'CARRID'.  "ilk gürülen alanlar (filterleme)
+*    gs_filter-low       = 'LH'.
+*    gs_filter-sign      = 'I'.
+*    gs_filter-option    = 'EQ'.
+*    APPEND gs_filter TO gt_filter.
+*
+*    gs_sort-fieldname = 'FLDATE'.
+*    gs_sort-up        = abap_true.
+*    APPEND gs_sort TO gt_sort.
+
+    CALL FUNCTION 'LVC_FIELDCATALOG_MERGE'
+      EXPORTING
+*       I_BUFFER_ACTIVE  =
+        i_structure_name = 'SFLIGHT'
+*       I_CLIENT_NEVER_DISPLAY       = 'X'
+*       I_BYPASSING_BUFFER           =
+*       I_INTERNAL_TABNAME           =
+      CHANGING
+        ct_fieldcat      = gt_fieldcat
+* EXCEPTIONS
+*       INCONSISTENT_INTERFACE       = 1
+*       PROGRAM_ERROR    = 2
+*       OTHERS           = 3
+      .
+    IF sy-subrc <> 0.
+* Implement suitable error handling here
+    ENDIF.
+
+
+*    LOOP AT gt_fieldcat ASSIGNING <fs_fieldcat>.  " hangi alanlarda değişiklik yapmak isteyorsak buraya yazariz
+*      IF <fs_fieldcat>-fieldname = 'CONNID'.
+*        <fs_fieldcat>-no_out = abap_true. "CONNID alanını görülmez yapar ama düzenle değiştir buttonundan geri görülür yapabiliriz
+*      ENDIF.
+*
+*      IF <fs_fieldcat>-fieldname = 'PRICE'.
+*        <fs_fieldcat>-tech = abap_true. "PRICE alanını görülmez yapar ve düzenle değiştir buttonundan geri geteremeyiz
+*      ENDIF.
+*    ENDLOOP.
+
+
+
+    CALL METHOD go_alv->set_table_for_first_display  "artık alvmız böyle alışırsan iyi olur
+      EXPORTING
+*       i_buffer_active      =
+*       i_bypassing_buffer   =
+*       i_consistency_check  =
+        i_structure_name     = 'SFLIGHT'
+*       is_variant           =
+*       i_save               =
+*       i_default            = 'X'
+        is_layout            = gs_layout
+*       is_print             =
+*       it_special_groups    =
+        it_toolbar_excluding = gt_toolbar_excluding "alvnın hemen üzerindeki buttonlar her hangi birini kaldırmak için
+*       it_hyperlink         =
+*       it_alv_graphics      =
+*       it_except_qinfo      =
+*       ir_salv_adapter      =
+      CHANGING
+        it_outtab            = gt_sflight
+        it_fieldcatalog      = gt_fieldcat
+        it_sort              = gt_sort
+        it_filter            = gt_filter
+*     EXCEPTIONS
+*       invalid_parameter_combination = 1
+*       program_error        = 2
+*       too_many_lines       = 3
+*       others               = 4
+      .
+    IF sy-subrc <> 0.
+*    Implement suitable error handling here
+    ENDIF.
+
+  ENDIF.
+
+ENDFORM.                    " ALV_NESNESI_OLUSTUR

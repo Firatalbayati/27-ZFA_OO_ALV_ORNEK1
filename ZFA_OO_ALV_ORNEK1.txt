@@ -1,0 +1,33 @@
+*&---------------------------------------------------------------------*
+*& Report  ZFA_OO_ALV_ORNEK1
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT zfa_oo_alv_ornek1.
+
+
+DATA : ok_code TYPE sy-ucomm,                                "ekrandaki geri dönüş buttonlari için
+       go_container TYPE REF TO cl_gui_custom_container,
+       go_alv       TYPE REF TO cl_gui_alv_grid,
+       gt_sflight   TYPE TABLE OF sflight,
+       gs_layout            TYPE lvc_s_layo,
+       gt_toolbar_excluding TYPE ui_functions,
+       gt_filter   TYPE lvc_t_filt,
+       gs_filter   TYPE lvc_s_filt,
+       gt_sort     TYPE lvc_t_sort,
+       gs_sort     TYPE lvc_s_sort,
+       gt_fieldcat TYPE lvc_t_fcat.
+
+FIELD-SYMBOLS <fs_fieldcat> LIKE LINE OF gt_fieldcat.
+
+CALL SCREEN 0100.   "çif tiklayip ok_code ve alv_area1 container oluşturuz
+
+
+INCLUDE zfa_oo_alv_ornek1_alv_olusto01.
+
+INCLUDE zfa_oo_alv_ornek1_alv_nesnef01.
+
+INCLUDE zfa_oo_alv_ornek1_user_commi01.

@@ -1,0 +1,23 @@
+*----------------------------------------------------------------------*
+***INCLUDE ZFA_OO_ALV_ORNEK1_ALV_OLUSTO01.
+*----------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&      Module  ALV_OLUSTUR_0100  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE alv_olustur_0100 OUTPUT.  "modulde yaratılan herşey başka screenden olaşılır , ondan dolayı perform kullanırız
+
+  PERFORM alv_nesnesi_olustur.
+
+ENDMODULE.                 " ALV_OLUSTUR_0100  OUTPUT
+*&---------------------------------------------------------------------*
+*&      Module  STATUS_0100  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE status_0100 OUTPUT.
+   SET PF-STATUS 'STAT_0100'. "bu olmadan geri dönüş buttonlarını kullanamayız
+   SET TITLEBAR 'TITLE_0100'.
+
+ENDMODULE.                 " STATUS_0100  OUTPUT
